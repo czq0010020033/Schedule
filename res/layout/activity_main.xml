@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <fragment
+        android:id="@+id/frag_top"
+        android:name="com.czq.schedule.fragment.TopFragment"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true" />
+
+    <!-- <CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/frag_top" /> -->
+	
+    <FrameLayout 
+        android:id="@+id/main_content"  
+        android:layout_width="fill_parent"  
+        android:layout_height="fill_parent"  
+        android:layout_below="@id/frag_top"
+      ></FrameLayout>
+
+    <fragment
+        android:id="@+id/frag_bottom"
+        android:name="com.czq.schedule.fragment.BottomFragment"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>

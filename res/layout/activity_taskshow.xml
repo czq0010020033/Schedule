@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/show_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <fragment
+        android:id="@+id/frag_top"
+        android:name="com.czq.schedule.fragment.TopFragment"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/show_title_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/frag_top"
+        android:gravity="center"
+        android:text="待办事项"
+        android:textSize="25sp" />
+
+    <!-- 日期时间显示 -->
+
+    <LinearLayout
+        android:id="@+id/show_dateandtime"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/show_title_text"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/show_date"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="日期"
+            android:textSize="20sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:gravity="center"
+            android:text="-"
+            android:textSize="20sp" />
+
+     <!--    <TextView
+            android:id="@+id/show_time"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="时间"
+            android:textSize="20sp" /> -->
+             <TextView
+            android:id="@+id/show_enddate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+             android:gravity="center"
+            android:text="到期日期"
+            android:textSize="20sp" />
+    
+    </LinearLayout>
+	
+    
+       
+    <!-- 标题 -->
+
+    <TextView
+        android:id="@+id/show_shixian"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/show_dateandtime"
+        android:text="事项："
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/show_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/show_dateandtime"
+        android:layout_toRightOf="@id/show_shixian"
+        android:text="标题"
+        android:textSize="20sp" />
+
+    <!-- 附加文本 -->
+
+    <TextView
+        android:id="@+id/show_content_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/show_shixian"
+        android:text="附加文本："
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/show_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/show_shixian"
+        android:layout_toRightOf="@id/show_content_text"
+        android:text="无"
+        android:textSize="20sp" >
+    </TextView>
+
+    <Button
+        android:id="@+id/show_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="修改" />
+
+    <Button
+        android:id="@+id/show_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="删除" />
+
+</RelativeLayout>

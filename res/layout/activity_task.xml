@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <Button
+            android:id="@+id/task_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="起始日期" />
+
+        <TextView
+            android:id="@+id/text_date"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/task_date"
+            android:layout_toRightOf="@id/task_date"
+            android:gravity="center"
+            android:text="日期"
+            android:textSize="@dimen/text_size" />
+
+  <!--       <Button
+            android:id="@+id/task_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/task_date"
+            android:text="时间设置" />
+
+        
+        
+        <TextView
+            android:id="@+id/text_time"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/task_time"
+            android:layout_toRightOf="@id/task_time"
+            android:gravity="center"
+            android:text="时间"
+            android:textSize="@dimen/text_size" /> -->
+        
+         <Button
+            android:id="@+id/task_enddate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/task_date"
+            android:text="到期日期" />
+
+        <TextView
+            android:id="@+id/text_enddate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/task_enddate"
+            android:layout_toRightOf="@id/task_enddate"
+            android:gravity="center"
+            android:text="日期"
+            android:textSize="@dimen/text_size" />
+
+        <TextView
+            android:id="@+id/task_text_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/task_enddate"
+            android:text="标题："
+            android:textSize="@dimen/text_size" />
+
+        <EditText
+            android:id="@+id/task_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/task_text_title"
+            android:layout_toRightOf="@id/task_text_title" />
+
+        <TextView
+            android:id="@+id/task_text_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/task_text_title"
+            android:text="附加文本："
+            android:textSize="@dimen/text_size" />
+
+        <EditText
+            android:id="@+id/task_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+             android:layout_alignBaseline="@id/task_text_content"
+            android:layout_toRightOf="@id/task_text_content" />
+        
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/task_text_content"
+            android:textSize="@dimen/text_size"
+            android:text="提醒方式设置：" />
+
+        <Button
+            android:id="@+id/task_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:text="确定" />
+
+        <Button
+            android:id="@+id/task_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="end"
+            android:text="取消" />
+
+
+  
+        
+    </RelativeLayout>
+
+</LinearLayout>

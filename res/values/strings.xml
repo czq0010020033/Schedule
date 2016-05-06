@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Schedule</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    
+    <!-- Task -->
+    <string name="ID">id</string>
+    <string name="DATE">date</string>
+    <string name="TITLE">title</string>
+    <string name="CONTENT">content</string>
+    <string name="REMINDWAY">remindway</string>
+    <string name="ISPAST">ispast</string>
+
+</resources>
