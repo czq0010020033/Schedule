@@ -16,17 +16,30 @@ import com.czq.schedule.biz.TaskBiz;
 import com.czq.schedule.biz.TaskBizImpl;
 import com.czq.schedule.component.MyDialogFragment;
 import com.czq.schedule.tool.Destination;
+import com.czq.schedule.tool.StrTool;
 import com.czq.schedule.tool.SwitchActivity;
 
-public class TaskActivity extends Activity
+/**
+ * 描述: 待办事项修改和新建的页面。<br>
+ * 进入该Activity时，会传入一个标志字符串（在该类有定义）来确定是要修改或者新建。<br>
+ * 当是新建页面时，会获取当天日期来赋值给date和enddate。<br>
+ * 当是修改页面时，会传入一个taskid，根据taskid来获取task，并在页面中显示出来。<br>
+ * <br>
+ * 作者： 陈镇钦/850530595@qq.com<br>
+ * 创建时间：2016年5月7日/下午3:23:09<br>
+ * 修改人：陈镇钦/850530595@qq.com<br>
+ * 修改时间：2016年5月7日/下午3:23:09<br>
+ * 修改备注：<br>
+ * 版本：1.0
+ */
+public class TaskActivity extends Activity implements OnClickListener
 {
-
+	// 页面内的view
 	private Button confirm;
 	private Button cancel;
 	private Button date_btn;
 	// private Button time_btn;
 	private Button enddate_btn;
-
 	private EditText title;
 	private EditText content;
 	private TextView date;
@@ -36,9 +49,10 @@ public class TaskActivity extends Activity
 	// intent传入的task_id和task_tag
 	private int id;
 	private String task_tag;
-
+	// 业务类
 	private TaskBiz taskBiz;
-	// 用于表明intent的作用。
+
+	// 标志字符串用于表明intent的作用。
 	public static final String TASK_TAG = "task_tag";
 	public static final String TASK_UPDATE = "task_update";
 	public static final String TASK_ADD = "task_add";
@@ -58,31 +72,35 @@ public class TaskActivity extends Activity
 		// time_btn = (Button) findViewById(R.id.task_time);
 		enddate_btn = (Button) findViewById(R.id.task_enddate);
 
-		// 添加事件监听
-		confirm.setOnClickListener(new ButtonListener());
-		cancel.setOnClickListener(new ButtonListener());
-		date_btn.setOnClickListener(new ButtonListener());
-		// time_btn.setOnClickListener(new ButtonListener());
-		enddate_btn.setOnClickListener(new ButtonListener());
-
 		title = (EditText) findViewById(R.id.task_title);
 		content = (EditText) findViewById(R.id.task_content);
 		date = (TextView) findViewById(R.id.text_date);
 		// time = (TextView) findViewById(R.id.text_time);
 		enddate = (TextView) findViewById(R.id.text_enddate);
 
+		// 示例化业务类
 		taskBiz = new TaskBizImpl(this);
 
-		// 获得一个id和task_tag
+		// 添加事件监听
+		confirm.setOnClickListener(this);
+		cancel.setOnClickListener(this);
+		date_btn.setOnClickListener(this);
+		// time_btn.setOnClickListener(new ButtonListener());
+		enddate_btn.setOnClickListener(this);
+
+		// 根据不同功能获得不同的信息
 		getMessage();
 	}
 
+	/**
+	 * 描述： 根据传入的字符标志位来获取要显示的信息
+	 */
 	private void getMessage()
 	{
 		Intent intent = getIntent();
 		task_tag = intent.getStringExtra(TASK_TAG);
 
-		// 判断task_tag.
+		// 为更新页面
 		if (task_tag.equals(TASK_UPDATE))
 		{
 
@@ -93,76 +111,90 @@ public class TaskActivity extends Activity
 			title.setText(task.getTitle());
 			content.setText(task.getContent());
 			date.setText(task.getDate());
+			enddate.setText(task.getEnddate());
 			// time.setText(task.getTime());
-		} else
+		}
+		// 为新建页面
+		else
 		{
 
-			date.setText(TaskBizImpl.getDateStr());
-			enddate.setText(TaskBizImpl.getDateStr());
+			date.setText(StrTool.getDateStr());
+			enddate.setText(StrTool.getDateStr());
 		}
 	}
 
-	private class ButtonListener implements OnClickListener
+	/**
+	 * 描述： 按键监听响应函数
+	 * 
+	 * @see android.view.View.OnClickListener#onClick(android.view.View)
+	 */
+	@Override
+	public void onClick(View v)
 	{
-
-		@Override
-		public void onClick(View v)
+		switch (v.getId())
 		{
-			switch (v.getId())
+		// 开始日期
+		case R.id.task_date:
+			// 显示日期对话框
+			MyDialogFragment dateDialog = new MyDialogFragment(
+					MyDialogFragment.DATE_DIALOG);
+			dateDialog.show(TaskActivity.this.getFragmentManager(), "date");
+			break;
+		// 结束日期
+		case R.id.task_enddate:
+			MyDialogFragment enddateDialog = new MyDialogFragment(
+					MyDialogFragment.ENDDATE_DIALOG);
+			enddateDialog.show(TaskActivity.this.getFragmentManager(),
+					"enddate");
+			break;
+		/*
+		 * case R.id.task_time: MyDialogFragment timeDialog = new
+		 * MyDialogFragment( MyDialogFragment.TIME_DIALOG);
+		 * timeDialog.show(TaskActivity.this.getFragmentManager(), "time");
+		 * break;
+		 */
+
+		// 确认。将数据传到task对象中。并传到数据库。
+		case R.id.task_confirm:
+			Task taskBean = new Task(id, date.getText().toString(), null,
+					enddate.getText().toString(), title.getText().toString(),
+					content.getText().toString(), 0, 0);
+
+			// 判断task_tag.
+			if (task_tag.equals(TASK_UPDATE))
 			{
-			// task页面的按钮
-			case R.id.task_date:
-
-				MyDialogFragment dateDialog = new MyDialogFragment(
-						MyDialogFragment.DATE_DIALOG);
-				dateDialog.show(TaskActivity.this.getFragmentManager(), "date");
-				break;
-			case R.id.task_enddate:
-				MyDialogFragment enddateDialog = new MyDialogFragment(
-						MyDialogFragment.ENDDATE_DIALOG);
-				enddateDialog.show(TaskActivity.this.getFragmentManager(),
-						"enddate");
-				break;
-			/*
-			 * case R.id.task_time: MyDialogFragment timeDialog = new
-			 * MyDialogFragment( MyDialogFragment.TIME_DIALOG);
-			 * timeDialog.show(TaskActivity.this.getFragmentManager(), "time");
-			 * break;
-			 */
-
-			// 确认。将数据传到task对象中。并传到数据库。
-			case R.id.task_confirm:
-				// 判断文本是否正确
-
-				//
-				Task taskBean = new Task(id, date.getText().toString(), null,
-						enddate.getText().toString(), title.getText()
-								.toString(), content.getText().toString(), 0, 0);
-
-				// 判断task_tag.
-				if (task_tag.equals(TASK_UPDATE))
+				if (!taskBiz.update(taskBean))
 				{
-					taskBiz.update(taskBean);
-					Toast.makeText(TaskActivity.this, "修改成功",
+					Toast.makeText(TaskActivity.this, "修改失败",
 							Toast.LENGTH_SHORT).show();
-				} else
-				{
-					id = taskBiz.add(taskBean);
-					Toast.makeText(TaskActivity.this, "添加成功",
-							Toast.LENGTH_SHORT).show();
+					return;
 				}
-				// 返回到TaskShowActivity
-				
-				SwitchActivity.switchActivity(TaskActivity.this,
-						Destination.TaskShowActivity, id);
-				TaskActivity.this.finish();
-				break;
-			case R.id.task_cancel:
-				TaskActivity.this.finish();
-				break;
-			}
-		}
 
+				Toast.makeText(TaskActivity.this, "修改成功", Toast.LENGTH_SHORT)
+						.show();
+			} else
+			{
+				id = taskBiz.add(taskBean);
+				// -1表示添加失败
+				if (id == -1)
+				{
+					Toast.makeText(TaskActivity.this, "添加失败",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+				Toast.makeText(TaskActivity.this, "添加成功", Toast.LENGTH_SHORT)
+						.show();
+			}
+			// 返回到TaskShowActivity，并结束当前Acivity
+			SwitchActivity.switchActivity(TaskActivity.this,
+					Destination.TaskShowActivity, id);
+			TaskActivity.this.finish();
+			break;
+		// 取消按钮
+		case R.id.task_cancel:
+			TaskActivity.this.finish();
+			break;
+		}
 	}
 
 	@Override
@@ -170,7 +202,7 @@ public class TaskActivity extends Activity
 	{
 		super.onDestroy();
 		if (taskBiz != null)
-			taskBiz.closeDB();
+			taskBiz.close();
 	}
 
 }

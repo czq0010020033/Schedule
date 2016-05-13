@@ -11,8 +11,23 @@ import android.widget.CalendarView.OnDateChangeListener;
 
 import com.czq.schedule.R;
 import com.czq.schedule.TaskListActivity;
-public class MainFragment extends Fragment
+
+/**
+ * 描述: 主页面（一个日历），通过选择日期来显示该日期的待办事项，但该日历有bug，需要更改<br>
+ * <br>
+ * 作者： 陈镇钦/850530595@qq.com<br>
+ * 创建时间：2016年5月7日/下午8:30:50<br>
+ * 修改人：陈镇钦/850530595@qq.com<br>
+ * 修改时间：2016年5月7日/下午8:30:50<br>
+ * 修改备注：<br>
+ * 版本：1.0
+ */
+public class MainFragment extends Fragment implements OnDateChangeListener
 {
+	Long date;
+	/**
+	 * android自带的日历类
+	 */
 	private CalendarView calendarView;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -20,20 +35,27 @@ public class MainFragment extends Fragment
 	{
 		View view = inflater.inflate(R.layout.frag_main, container, false);
 		calendarView = (CalendarView) view.findViewById(R.id.calendarView);
-		calendarView.setOnDateChangeListener(new DateListener());
-		System.out.println("calendarView childcount: " + calendarView.getChildCount());
+		calendarView.setOnDateChangeListener(this);
+		System.out.println("calendarView childcount: "
+				+ calendarView.getChildCount());
+
+		date = calendarView.getDate();
 		return view;
 	}
 
-	// 日历监听事件
-	private class DateListener implements OnDateChangeListener
+	/**
+	 * 描述： 获取选择的日期，然后转到TaskListAcitity显示当天的待办事项
+	 * 
+	 * @see android.widget.CalendarView.OnDateChangeListener#onSelectedDayChange(android.widget.CalendarView,
+	 *      int, int, int)
+	 */
+	@Override
+	public void onSelectedDayChange(CalendarView view, int year, int month,
+			int dayOfMonth)
 	{
-
-		@Override
-		public void onSelectedDayChange(CalendarView view, int year, int month,
-				int dayOfMonth)
+		if (view.getDate() != date)
 		{
-			
+			date = view.getDate();
 			// 打开listActivity,由其显示待办事项
 			Intent intent = new Intent(MainFragment.this.getActivity(),
 					TaskListActivity.class);

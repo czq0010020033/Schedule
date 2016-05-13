@@ -1,21 +1,28 @@
 package com.czq.schedule;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.widget.RemoteViews;
 
 import com.czq.schedule.biz.TaskBizImpl;
+import com.czq.schedule.tool.StrTool;
 
 /**
- * 为手机添加桌面控件，当点击桌面控件时则进入主程序
- * 
- * AppWidgetProvider：继承自BroadcastRecevier，在AppWidget应用update、enable、
- * disable和delete时接收通知。 其中，onUpdate、onReceive是最常用到的方法，它们接收更新通知
- * 
- * @author jiqinlin
- *
+ * 描述:为手机添加桌面控件，当点击桌面控件时则进入主页面MainActivity
+ * AppWidgetProvider：继承自BroadcastRecevier
+ * ，在AppWidget应用update、enable、disable和delete时接收通知。
+ * 其中，onUpdate、onReceive是最常用到的方法，它们接收更新通知。<br>
+ * <br>
+ * 作者： 陈镇钦/850530595@qq.com<br>
+ * 创建时间：2016年5月7日/下午3:33:33<br>
+ * 修改人：陈镇钦/850530595@qq.com<br>
+ * 修改时间：2016年5月7日/下午3:33:33<br>
+ * 修改备注：<br>
+ * 版本：1.0
  */
 public class TaskWidget extends AppWidgetProvider
 {
@@ -25,11 +32,9 @@ public class TaskWidget extends AppWidgetProvider
 	 * 用来间隔的更新App
 	 * Widget，间隔时间用AppWidgetProviderInfo里的updatePeriodMillis属性定义(单位为毫秒)。
 	 * 注意：SDK1.5之后此android:updatePeriodMillis就失效了，要自己创建service更新。 这个方法也会在用户添加App
-	 * Widget时被调用，因此它应该执行基础的设置，比如为视图定义事件处理器并启动一个临时的服务Service，如果需要的话。
-	 * 但是，如果你已经声明了一个配置活动，这个方法在用户添加App Widget时将不会被调用，
-	 * 而只在后续更新时被调用。配置活动应该在配置完成时负责执行第一次更新。
+	 * Widget时被调用，因此它应该执行基础的设置，比如为视图定义事件处理器并启动一个临时的服务Service，如果需要的话。<br>
+	 * 该程序调用onUpdate的方式时通过发送Inent让这个类结束，并在onreceive中调用onUpdate更新widget。
 	 */
-
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds)
@@ -37,36 +42,26 @@ public class TaskWidget extends AppWidgetProvider
 		System.out.println("onUpdate");
 		// 赋值
 		widgetIds = appWidgetIds;
-		// 点击桌面组件时进入主程序入口
-		// Intent intent=new Intent(context, MainActivity.class);
-		/*
-		 * PendingIntent pendingIntent=PendingIntent.getActivity(context, 0,
-		 * intent, 0); //RemoteViews类描述了一个View对象能够显示在其他进程中，可以融合layout资源文件实现布局。
-		 * //虽然该类在android.widget.RemoteViews而不是appWidget下面,但在Android
-		 * Widgets开发中会经常用到它， //主要是可以跨进程调用(appWidget由一个服务宿主来统一运行的)。 RemoteViews
-		 * myRemoteViews = new RemoteViews(context.getPackageName(),
-		 * R.layout.my_layout);
-		 * //myRemoteViews.setImageViewResource(R.id.imageView,
-		 * R.drawable.png1);//设置布局控件的属性（要特别注意）
-		 * myRemoteViews.setOnClickPendingIntent(R.id.btn, pendingIntent);
-		 * ComponentName myComponentName = new ComponentName(context,
-		 * TestActivity.class);
-		 * //负责管理AppWidget，向AppwidgetProvider发送通知。提供了更新AppWidget状态
-		 * ，获取已经安装的Appwidget提供信息和其他的相关状态 AppWidgetManager myAppWidgetManager =
-		 * AppWidgetManager.getInstance(context);
-		 * myAppWidgetManager.updateAppWidget(myComponentName, myRemoteViews);
-		 */
+		// RemoteViews类描述了一个View对象能够显示在其他进程中，可以融合layout资源文件实现布局。widgei对象
 		RemoteViews myRemoteViews = new RemoteViews(context.getPackageName(),
 				R.layout.widget_task);
-		
-		myRemoteViews.setTextViewText(R.id.widget_date, TaskBizImpl.getDateStr() + " 今日事项\n");
+		myRemoteViews.setTextViewText(R.id.widget_date,
+				StrTool.getDateStr() + " 今日事项\n");
 		myRemoteViews.setTextViewText(R.id.widget_text,
 				TaskBizImpl.getTodayTitles(context));
-		// 遍历更新
+		
+		// 创建点击事件，点击桌面组件时进入主程序入口
+		Intent intent = new Intent(context, MainActivity.class);
+		myRemoteViews.setOnClickPendingIntent(R.id.widget_click,
+				PendingIntent.getActivity(context, 0, intent, 0));
+		
+		// 遍历更新，TaskWidget的实例可能不只一个
 		for (int id : appWidgetIds)
 		{
+			// appWidgetManager负责管理AppWidget，向AppwidgetProvider发送通知。提供了更新AppWidget状态
 			appWidgetManager.updateAppWidget(id, myRemoteViews);
 		}
+
 	}
 
 	/**
@@ -103,15 +98,14 @@ public class TaskWidget extends AppWidgetProvider
 
 	/**
 	 * 接收到每个广播时都会被调用，而且在上面的回调函数之前。 你通常不需要实现这个方法，因为缺省的AppWidgetProvider实现过滤所有App
-	 * Widget广播并恰当的调用上述方法。 注意: 在Android 1.5中，有一个已知问题，onDeleted()方法在调用时不被调用。
-	 * 为了规避这个问题，你可以像Group post中描述的那样实现onReceive()来接收这个onDeleted()回调。
+	 * Widget广播并恰当的调用上述方法。
 	 */
 	@Override
 	public void onReceive(Context context, Intent intent)
 	{
 		System.out.println("onReceive");
 		super.onReceive(context, intent);
-		System.out.println("next");
+		
 		// 日期改变时调用
 		if (intent.getAction().equals(Intent.ACTION_DATE_CHANGED))
 		{
@@ -119,10 +113,27 @@ public class TaskWidget extends AppWidgetProvider
 			System.out.println(" " + widgetIds[0]);
 			if (widgetIds != null && widgetIds.length > 0)
 			{
-				onUpdate(context, AppWidgetManager.getInstance(context), widgetIds);
+				//调用更新函数
+				onUpdate(context, AppWidgetManager.getInstance(context),
+						widgetIds);
 			}
 		}
-
 	}
+	
+	
+		/**
+		* 描述：更新widget，发送一个intent让widget接收，并调用onUpdate函数，是一个静态方法
+		* @param context void
+		*/ 
+		public static void updateWidget(Context context)
+		{
+			Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+			Bundle extras = new Bundle();
+			//放入widget的id
+			extras.putIntArray(AppWidgetManager.EXTRA_APPWIDGET_IDS,
+					TaskWidget.widgetIds);
+			intent.putExtras(extras);
+			context.sendBroadcast(intent);
+		}
 
 }

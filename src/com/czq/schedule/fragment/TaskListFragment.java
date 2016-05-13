@@ -20,17 +20,40 @@ import com.czq.schedule.bean.Task;
 import com.czq.schedule.biz.TaskBiz;
 import com.czq.schedule.biz.TaskBizImpl;
 
-public class TaskListFragment extends Fragment
+/**
+ * 描述: 显示所有待办事项的Fragment<br>
+ * <br>
+ * 作者： 陈镇钦/850530595@qq.com<br>
+ * 创建时间：2016年5月7日/下午8:39:47<br>
+ * 修改人：陈镇钦/850530595@qq.com<br>
+ * 修改时间：2016年5月7日/下午8:39:47<br>
+ * 修改备注：<br>
+ * 版本：1.0
+ */
+public class TaskListFragment extends Fragment implements OnItemClickListener
 {
+
 	private ListView listView;
 
 	// 标志要查询什么内容。在Intent中传输
-	public static final String TASKLIST_TAG = "list_tag";
-	public static final String TAG_ALL = "tag_all";
-	public static final String TAG_DATE = "tag_date";
+	/*
+	 * public static final String TASKLIST_TAG = "list_tag"; public static final
+	 * String TAG_ALL = "tag_all"; public static final String TAG_DATE =
+	 * "tag_date";
+	 */
 
+	/**
+	 * 含有所有待办事项的list
+	 */
 	private List<Task> tasks;
+
+	/**
+	 * 符合listView显示的数据结构，里面含有task的title，date，enddate。
+	 */
 	private List<HashMap<String, String>> tasksStr;
+	/**
+	 * 业务类
+	 */
 	private TaskBiz taskBiz;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +69,9 @@ public class TaskListFragment extends Fragment
 		return view;
 	}
 
+	/**
+	 * 描述： 显示所有待办事项
+	 */
 	private void showList()
 	{
 		// Intent intent = getActivity().getIntent();
@@ -75,34 +101,41 @@ public class TaskListFragment extends Fragment
 				{ "title", "date" }, new int[]
 				{ R.id.item_title, R.id.item_date });
 		listView.setAdapter(simpleAdapter);
-		listView.setOnItemClickListener(new ItemListener());
+		listView.setOnItemClickListener(this);
 
 	}
 
-	// listView监听事件
-	private class ItemListener implements OnItemClickListener
+	/**
+	 * 描述： 对listView的每一项的监听，点击后进入相应的显示页面
+	 * 
+	 * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView,
+	 *      android.view.View, int, long)
+	 */
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id)
 	{
+		// 传入id值，显示待办事项具体内容
+		Task task = tasks.get(position);
 
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id)
-		{
-			// 传入id值，显示待办事项具体内容
-			Task task = tasks.get(position);
+		Intent intent = new Intent(TaskListFragment.this.getActivity(),
+				TaskShowActivity.class);
+		intent.putExtra("task_id", task.getId());
+		TaskListFragment.this.startActivity(intent);
 
-			Intent intent = new Intent(TaskListFragment.this.getActivity(),
-					TaskShowActivity.class);
-			intent.putExtra("task_id", task.getId());
-			TaskListFragment.this.startActivity(intent);
-		}
 	}
 
+	/**
+	 * 描述： 在结束时调用taskBiz的close方法，关闭数据库
+	 * 
+	 * @see android.app.Fragment#onDestroy()
+	 */
 	@Override
 	public void onDestroy()
 	{
 		super.onDestroy();
 		if (taskBiz != null)
-			taskBiz.closeDB();
+			taskBiz.close();
 	}
 
 }

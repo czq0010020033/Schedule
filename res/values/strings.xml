@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Schedule</string>
+    <string name="app_name">待办事项</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    
+
     <!-- Task -->
     <string name="ID">id</string>
     <string name="DATE">date</string>
@@ -12,5 +12,18 @@
     <string name="CONTENT">content</string>
     <string name="REMINDWAY">remindway</string>
     <string name="ISPAST">ispast</string>
+
+    <!-- 关于界面 -->
+    <string name="about_explain">1.提供了在手机主页面显示当天待办事项的功能，通过添加桌面小部件来实现。\n\n2.没有提供准时提醒功能，但提供了起始日期和到期日期的设置，主要用于待办事项的规划。\n\n3.提供了导入导出功能，只要发送导出的文件，就可在不同的手机上使用。</string>
+    <string name="about_warning">注意:程序不能装在存储卡上，否则将不能添加小部件！</string>
+    <string name="author">作者： 陈镇钦\n邮箱：850530595@qq.com</string>
+    <string name="version">版本：1.0</string>
+    <!-- 导出页面 -->
+    <string name="fileName">schedule.txt</string>
+    <string name="export_explain">注意事项：\n1.导出文件会覆盖相同名称的文件。\n2.导入文件不会覆盖之前的待办事项，如果有重复，请先将事项全部删除。\n3.导入导出文件默认在存储卡根目录下的schedule文件夹中进行。\n4.文件以unicode编码的形式存储，格式：起始日期 到期日期 待办事项\\n。</string>
+
+    <!-- 导入页面 -->
+    <string name="import_path">所在文件夹：SD卡/schedule</string>
+    <string name="import_explain">可导入的文件：</string>
 
 </resources>

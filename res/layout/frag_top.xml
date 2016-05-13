@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#404040" >
@@ -9,6 +9,14 @@
         android:layout_height="fill_parent"
         android:contentDescription="添加事项"
         android:layout_gravity="end"
+        android:layout_alignParentRight="true"
         android:src="@android:drawable/ic_input_add" />
+    <ImageButton
+        android:id="@+id/top_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:contentDescription="菜单"
+        android:layout_toLeftOf="@id/top_add"
+        android:src="@android:drawable/ic_menu_agenda" />
 
-</FrameLayout>
+</RelativeLayout>

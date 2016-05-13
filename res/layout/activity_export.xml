@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <TextView 
+        android:text="导出的文件名："
+        android:textSize="20sp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+    <EditText 
+        android:id="@+id/export_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fileName"/>
+    <Button
+        android:id="@+id/export_exportbtn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+         android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="导出文件"
+        style="@style/ButtonText" />
+     <Button
+        android:id="@+id/export_importbtn"
+        android:layout_marginTop="10dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+         android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        style="@style/ButtonText"
+        android:text="导入文件" />
+      <Button
+        android:id="@+id/export_deleteAll"
+        android:layout_marginTop="10dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+         android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        style="@style/ButtonText"
+        android:text="删除全部待办事项" />
+      <TextView 
+           android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+         android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="@string/export_explain"/>
+    
+
+</LinearLayout>

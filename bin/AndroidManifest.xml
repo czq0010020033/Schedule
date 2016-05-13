@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.czq.schedule"
+    android:installLocation="internalOnly"
     android:versionCode="1"
     android:versionName="1.0" >
 
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="21" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
+    </uses-permission>
 
     <application
         android:allowBackup="true"
@@ -28,11 +33,20 @@
         </activity>
         <activity android:name="com.czq.schedule.TaskShowActivity" >
         </activity>
+        <activity android:name="com.czq.schedule.AboutActivity" >
+        </activity>
+        <activity android:name="com.czq.schedule.ExportActivity" >
+        </activity>
+        <activity android:name="com.czq.schedule.ImportActivity" >
+        </activity>
+
+        <!--
         <activity android:name="com.czq.schedule.TaskWidgetActivity" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+        -->
 
         <receiver android:name="com.czq.schedule.TaskWidget" >
             <intent-filter>

@@ -19,14 +19,36 @@ import com.czq.schedule.bean.Task;
 import com.czq.schedule.biz.TaskBiz;
 import com.czq.schedule.biz.TaskBizImpl;
 
-public class TaskListActivity extends Activity
+/**
+ * 描述:
+ * 显示待办事项的Activity，根据传入的标志的不同显示不同。标志位的名字是TASKLIST_TAG，值为TASKLIST_TAG或TAG_DATE。
+ * 现在只传入TAG_DATE
+ * ，只用来显示当天待办事项，这个类与TaskListFragment高度耦合，而TaskListFragment用来显示所有待办事项。 这两个类需要整合<br>
+ * <br>
+ * 作者： 陈镇钦/850530595@qq.com<br>
+ * 创建时间：2016年5月7日/下午9:01:26<br>
+ * 修改人：陈镇钦/850530595@qq.com<br>
+ * 修改时间：2016年5月7日/下午9:01:26<br>
+ * 修改备注：<br>
+ * 版本：1.0
+ */
+public class TaskListActivity extends Activity implements OnItemClickListener
 {
 
 	private ListView listView;
-	
+
 	// 标志要查询什么内容。在Intent中传输
+	/**
+	 * 这是标志位的名字
+	 */
 	public static final String TASKLIST_TAG = "list_tag";
+	/** 
+	 *   标志位值
+	 */
 	public static final String TAG_ALL = "tag_all";
+	/**  
+	 *   标志位值
+	 */ 
 	public static final String TAG_DATE = "tag_date";
 
 	private List<Task> tasks;
@@ -47,6 +69,9 @@ public class TaskListActivity extends Activity
 		showList();
 	}
 
+	/**
+	* 描述： 显示数据
+	*/ 
 	private void showList()
 	{
 		Intent intent = getIntent();
@@ -78,28 +103,30 @@ public class TaskListActivity extends Activity
 				{ "title", "date" }, new int[]
 				{ R.id.item_title, R.id.item_date });
 		listView.setAdapter(simpleAdapter);
-		listView.setOnItemClickListener(new ItemListener());
+		listView.setOnItemClickListener(this);
 
 	}
 
-	// listView监听事件
-	private class ItemListener implements OnItemClickListener
+	/**
+	* 描述： listView监听事件
+	* @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
+	*/ 
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id)
 	{
+		// 传入id值，显示待办事项具体内容
+					Task task = tasks.get(position);
 
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id)
-		{
-			// 传入id值，显示待办事项具体内容
-			Task task = tasks.get(position);
-
-			Intent intent = new Intent(TaskListActivity.this,
-					TaskShowActivity.class);
-			intent.putExtra("task_id", task.getId());
-			startActivity(intent);
-		}
+					Intent intent = new Intent(TaskListActivity.this,
+							TaskShowActivity.class);
+					intent.putExtra("task_id", task.getId());
+					startActivity(intent);
 	}
 
+	/**
+	* 描述：按返回键则结束该Activity，该方式还不确定是否好用
+	*/ 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
@@ -108,7 +135,7 @@ public class TaskListActivity extends Activity
 		{
 			TaskListActivity.this.finish();
 		}
-		
+
 		return true;
 	}
 
@@ -117,6 +144,8 @@ public class TaskListActivity extends Activity
 	{
 		super.onDestroy();
 		if (taskBiz != null)
-			taskBiz.closeDB();
+			taskBiz.close();
 	}
+
+	
 }

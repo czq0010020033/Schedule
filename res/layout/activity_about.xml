@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_brown"
+    >
+
+    <TextView
+        android:id="@+id/about_shuoming"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="说明"
+        android:gravity="center"
+        android:textSize="25sp" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/about_explain"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/about_shuoming"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="@string/about_explain"
+        android:textSize="20sp" />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/about_explain"
+        android:text="@string/about_warning"
+        android:textColor="#FF0000"
+        android:gravity="center"
+        android:textSize="20sp" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/about_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
+        android:gravity="center"
+        android:text="@string/author"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/about_text"
+        android:gravity="center"
+        android:text="@string/version"
+        android:textSize="15sp" />
+
+</RelativeLayout>

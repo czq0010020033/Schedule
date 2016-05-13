@@ -8,18 +8,19 @@
         android:id="@+id/item_title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="start|center"
-        android:text="title"
-        android:singleLine="true"
         android:ellipsize="end"
-        android:textSize="20sp"
-        />
+        android:gravity="start|center"
+        android:singleLine="true"
+        android:text="title"
+        android:textSize="20sp" />
+
     <TextView
         android:id="@+id/item_date"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="date"
         android:gravity="end"
-       />
-    
+        android:text="date"
+        android:textColor="#BFBFBF"
+        android:textSize="12sp" />
+
 </FrameLayout>

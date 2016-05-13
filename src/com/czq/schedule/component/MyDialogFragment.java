@@ -17,22 +17,40 @@ import android.widget.Toast;
 import com.czq.schedule.R;
 import com.czq.schedule.biz.TaskBiz;
 import com.czq.schedule.biz.TaskBizImpl;
-import com.czq.schedule.tool.Destination;
-import com.czq.schedule.tool.SwitchActivity;
+import com.czq.schedule.tool.StrTool;
 
-public class MyDialogFragment extends DialogFragment
+/**
+ * 描述: 显示对话框，根据传入标志的不同产生不同对话框<br>
+ * <br>
+ * 作者： 陈镇钦/850530595@qq.com<br>
+ * 创建时间：2016年5月7日/下午6:59:28<br>
+ * 修改人：陈镇钦/850530595@qq.com<br>
+ * 修改时间：2016年5月7日/下午6:59:28<br>
+ * 修改备注：<br>
+ * 版本：1.0
+ */
+public class MyDialogFragment extends DialogFragment implements
+		OnDateSetListener
 {
-	private int type;
+	private int type = 0;
 
+	/**
+	 * 选择开始日期对话框
+	 */
 	public final static int DATE_DIALOG = 0;
 	// public final static int TIME_DIALOG = 1;
+	/**
+	 * 是否删除对话框
+	 */
 	public final static int ALERT_DIALOG = 2;
+	/**
+	 * 选择结束日期对话框
+	 */
 	public final static int ENDDATE_DIALOG = 3;
 
 	// type值为MyDialogFragment.DATE_DIALOG或TIME_DIALOG
 	public MyDialogFragment(int type)
 	{
-		// TODO 自动生成的构造函数存根
 		super();
 		this.type = type;
 
@@ -45,18 +63,19 @@ public class MyDialogFragment extends DialogFragment
 		// TODO 自动生成的方法存根
 		switch (type)
 		{
+		// 选择开始日期对话框
 		case DATE_DIALOG:
-
 			Calendar c = Calendar.getInstance();
-
-			dialog = new DatePickerDialog(getActivity(), new DateListener(),
+			// 实例化对话框，并在onDateSet中处理响应
+			dialog = new DatePickerDialog(getActivity(), this,
 					c.get(Calendar.YEAR), c.get(Calendar.MONTH),
 					c.get(Calendar.DAY_OF_MONTH));
 			break;
+		// 选择结束日期对话框
 		case ENDDATE_DIALOG:
 			Calendar ce = Calendar.getInstance();
-
-			dialog = new DatePickerDialog(getActivity(), new EnddateListener(),
+			// 实例化对话框，并在onDateSet中处理响应
+			dialog = new DatePickerDialog(getActivity(), this,
 					ce.get(Calendar.YEAR), ce.get(Calendar.MONTH),
 					ce.get(Calendar.DAY_OF_MONTH));
 			break;
@@ -65,10 +84,12 @@ public class MyDialogFragment extends DialogFragment
 		 * TimePickerDialog(getActivity(), new TimeListener(),
 		 * ct.get(Calendar.HOUR_OF_DAY), ct.get(Calendar.MINUTE), true); break;
 		 */
+		//是否删除对话框，通过builder来建立一个AlertDialog
 		case ALERT_DIALOG:
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 			builder.setTitle("提示");
 			builder.setMessage("是否删除？");
+			//取消键的监听
 			builder.setNegativeButton("取消", new OnClickListener()
 			{
 				@Override
@@ -82,6 +103,7 @@ public class MyDialogFragment extends DialogFragment
 					dialog.dismiss();
 				}
 			});
+			//确定键的监听
 			builder.setPositiveButton("确定", new OnClickListener()
 			{
 				@Override
@@ -93,12 +115,14 @@ public class MyDialogFragment extends DialogFragment
 							R.id.show_id);
 					taskBiz.delete(Integer
 							.valueOf(task_id.getText().toString()));
+					taskBiz.close();
 					// 提示
 					Toast.makeText(getActivity(), "删除成功", Toast.LENGTH_SHORT)
 							.show();
-					// 返回到Tasklist
-					SwitchActivity.switchActivity(getActivity(),
-							Destination.TaskListActivity, 0);
+					// 结束页面
+					/*SwitchActivity.switchActivity(getActivity(),
+							Destination.MainActivity, 0);*/
+					getActivity().finish();
 				}
 			});
 			dialog = builder.create();
@@ -108,37 +132,29 @@ public class MyDialogFragment extends DialogFragment
 		return dialog;
 	}
 
-	// 日期改变监听函数。
-	private class DateListener implements OnDateSetListener
+	/**
+	 * 描述：根据标志不同显示在不同的TextView上
+	 * 
+	 * @see android.app.DatePickerDialog.OnDateSetListener#onDateSet(android.widget.DatePicker,
+	 *      int, int, int)
+	 */
+	@Override
+	public void onDateSet(DatePicker view, int year, int monthOfYear,
+			int dayOfMonth)
 	{
-
-		@Override
-		public void onDateSet(DatePicker view, int year, int monthOfYear,
-				int dayOfMonth)
+		TextView date = null;
+		switch (type)
 		{
-			// TODO 自动生成的方法存根
-			TextView date = (TextView) getActivity().findViewById(
-					R.id.text_date);
-			// 将日期写成固定格式的字符串
-			date.setText(TaskBizImpl.getDateStr(year, monthOfYear, dayOfMonth));
+		case DATE_DIALOG:
+			date = (TextView) getActivity().findViewById(R.id.text_date);
+			break;
+		case ENDDATE_DIALOG:
+			date = (TextView) getActivity().findViewById(R.id.text_enddate);
+			break;
 		}
-	}
-
-	private class EnddateListener implements OnDateSetListener
-	{
-
-		@Override
-		public void onDateSet(DatePicker view, int year, int monthOfYear,
-				int dayOfMonth)
-		{
-			// TODO 自动生成的方法存根
-			TextView enddate = (TextView) getActivity().findViewById(
-					R.id.text_enddate);
-			// 将日期写成固定格式的字符串
-			
-
-			enddate.setText(TaskBizImpl.getDateStr(year, monthOfYear, dayOfMonth));
-		}
+		// 将日期写成固定格式的字符串
+		if (date != null)
+			date.setText(StrTool.getDateStr(year, monthOfYear, dayOfMonth));
 	}
 
 	/*

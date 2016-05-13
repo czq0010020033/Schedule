@@ -1,65 +1,122 @@
 package com.czq.schedule.biz;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 
 import com.czq.schedule.TaskWidget;
 import com.czq.schedule.bean.Task;
 import com.czq.schedule.database.DBManager;
 
+/**
+ * 
+* 描述: TaskBiz的实现类<br><br>
+* 作者： 陈镇钦/850530595@qq.com<br>    
+* 创建时间：2016年5月7日/下午6:39:12<br>    
+* 修改人：陈镇钦/850530595@qq.com<br>    
+* 修改时间：2016年5月7日/下午6:39:12<br>    
+* 修改备注：<br>
+* 版本：1.0
+*/   
 public class TaskBizImpl implements TaskBiz
 {
+	
+	/** 
+	 *  数据库操作类
+	 */ 
 	private DBManager dbManager;
+	/** 
+	 *   上下文，可以是Activity，Fragment等。
+	 */ 
 	private Context context;
 
 	public TaskBizImpl(Context context)
 	{
-		// TODO 自动生成的构造函数存根
 		dbManager = new DBManager(context);
 		this.context = context;
 	}
 
+	/**
+	* 描述： 
+	* @see com.czq.schedule.biz.TaskBiz#add(com.czq.schedule.bean.Task)
+	*/ 
 	@Override
 	public int add(Task task)
 	{
-		// TODO 自动生成的方法存根
-		int id = dbManager.add(task);
-		updateWidget(context);
+		int id = -1;
+		if ("".equals(task.getTitle()) || "".equals(task.getDate()) || "".equals(task.getEnddate()))
+		{
+			return id;
+		}
+		id = dbManager.add(task);
+		//更新widget状态
+		TaskWidget.	updateWidget(context);
 		return id;
 	}
 
+	/**
+	* 描述： 
+	* @see com.czq.schedule.biz.TaskBiz#addWithNoUpdate(com.czq.schedule.bean.Task)
+	*/ 
 	@Override
-	public void update(Task task)
+	public int addWithNoUpdate(Task task)
 	{
-		// TODO 自动生成的方法存根
+		int id = -1;
+		if ("".equals(task.getTitle()) || "".equals(task.getDate()) || "".equals(task.getEnddate()))
+		{
+			return id;
+		}
+		id = dbManager.add(task);
+		return id;
+	}
+	
+	/**
+	* 描述： 
+	* @see com.czq.schedule.biz.TaskBiz#update(com.czq.schedule.bean.Task)
+	*/ 
+	@Override
+	public boolean update(Task task)
+	{
+		if ("".equals(task.getTitle()) || "".equals(task.getDate()) || "".equals(task.getEnddate()))
+		{
+			return false;
+		}
 		dbManager.update(task);
-		updateWidget(context);
+		//更新widget状态
+		TaskWidget.updateWidget(context);
+		
+		return true;
 	}
 
+	/**
+	* 描述： 
+	* @see com.czq.schedule.biz.TaskBiz#delete(int)
+	*/ 
 	@Override
 	public void delete(int id)
 	{
-		// TODO 自动生成的方法存根
 		dbManager.delete(id);
-		updateWidget(context);
+		//更新widget状态
+		TaskWidget.updateWidget(context);
 	}
 
+	/**
+	* 描述： 
+	* @see com.czq.schedule.biz.TaskBiz#queryAll()
+	*/ 
 	@Override
 	public List<Task> queryAll()
 	{
-		// TODO 自动生成的方法存根
 		return dbManager.queryAll();
 	}
 
+	/**
+	* 描述： 
+	* @see com.czq.schedule.biz.TaskBiz#getTitles(java.util.List)
+	*/ 
 	@Override
 	public List<String> getTitles(List<Task> tasks)
 	{
@@ -72,6 +129,10 @@ public class TaskBizImpl implements TaskBiz
 		return tasksStr;
 	}
 
+	/**
+	* 描述： 
+	* @see com.czq.schedule.biz.TaskBiz#getTitleAndDate(java.util.List)
+	*/ 
 	@Override
 	public List<HashMap<String, String>> getTitleAndDate(List<Task> tasks)
 	{
@@ -86,23 +147,30 @@ public class TaskBizImpl implements TaskBiz
 		return tasksStr;
 	}
 
+	/**
+	* 描述： 
+	* @see com.czq.schedule.biz.TaskBiz#queryByDate(int, int, int)
+	*/ 
 	@Override
 	public List<Task> queryByDate(int year, int month, int dayOfMonth)
 	{
-		// TODO 自动生成的方法存根
-
 		return dbManager.queryByDate(year, month, dayOfMonth);
 	}
 
+	/**
+	* 描述： 
+	* @see com.czq.schedule.biz.TaskBiz#query(int)
+	*/ 
 	@Override
 	public Task query(int id)
 	{
-		// TODO 自动生成的方法存根
 
 		return dbManager.query(id);
 	}
 
-	// 获得当天的待办事项。返回是一个字符串。用于widget显示
+	/**
+	* 描述：获得当天的待办事项。返回是一个字符串。用于widget显示
+	*/ 
 	public static String getTodayTitles(Context context)
 	{
 		// 获得该日期的待办事项。
@@ -117,45 +185,36 @@ public class TaskBizImpl implements TaskBiz
 		{
 			stringBuilder.append(s + "\n");
 		}
+		
+		taskBiz.close();
 		return stringBuilder.toString();
 	}
 
-	// 更新widget
-	public static void updateWidget(Context context)
-	{
-		Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-		Bundle extras = new Bundle();
-		extras.putIntArray(AppWidgetManager.EXTRA_APPWIDGET_IDS,
-				TaskWidget.widgetIds);
-		intent.putExtras(extras);
-		context.sendBroadcast(intent);
-	}
 	
-	//获得当天日期的字符串
-	public static String getDateStr()
-	{
-		Date date = new Date();
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		return simpleDateFormat.format(date);
-	}
 	
-	//将输入的年月日转换为固定格式的字符串
-	public static String getDateStr(int year, int monthOfYear,int dayOfMonth)
-	{
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(year, monthOfYear, dayOfMonth);
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-				"yyyy-MM-dd");
-		String dateStr = simpleDateFormat.format(calendar.getTime());
-		
-		return dateStr;
-	}
+	
 
+	/**
+	* 描述： 
+	* @see com.czq.schedule.biz.TaskBiz#close()
+	*/ 
 	@Override
-	public void closeDB()
+	public void close()
 	{
 		// TODO 自动生成的方法存根
 		dbManager.closeDB();
 	}
+
+	/**
+	* 描述： 
+	* @see com.czq.schedule.biz.TaskBiz#deleteAll()
+	*/ 
+	@Override
+	public void deleteAll()
+	{
+		dbManager.deleteAll();
+	}
+
+	
 
 }
