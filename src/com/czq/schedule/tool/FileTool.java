@@ -183,7 +183,7 @@ public class FileTool
 	}
 
 	/**
-	 * 描述：获得/schedule文件夹中的所有文件名
+	 * 描述：获得/schedule文件夹中的所有文件名。
 	 */
 	public static List<String> getFileInDir()
 	{
