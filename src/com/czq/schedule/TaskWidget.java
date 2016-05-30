@@ -3,6 +3,7 @@ package com.czq.schedule;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,16 +46,16 @@ public class TaskWidget extends AppWidgetProvider
 		// RemoteViews类描述了一个View对象能够显示在其他进程中，可以融合layout资源文件实现布局。widgei对象
 		RemoteViews myRemoteViews = new RemoteViews(context.getPackageName(),
 				R.layout.widget_task);
-		myRemoteViews.setTextViewText(R.id.widget_date,
-				StrTool.getDateStr() + " 今日事项\n");
+		myRemoteViews.setTextViewText(R.id.widget_date, StrTool.getDateStr()
+				+ " 今日事项\n");
 		myRemoteViews.setTextViewText(R.id.widget_text,
 				TaskBizImpl.getTodayTitles(context));
-		
+
 		// 创建点击事件，点击桌面组件时进入主程序入口
 		Intent intent = new Intent(context, MainActivity.class);
 		myRemoteViews.setOnClickPendingIntent(R.id.widget_click,
 				PendingIntent.getActivity(context, 0, intent, 0));
-		
+
 		// 遍历更新，TaskWidget的实例可能不只一个
 		for (int id : appWidgetIds)
 		{
@@ -105,7 +106,7 @@ public class TaskWidget extends AppWidgetProvider
 	{
 		System.out.println("onReceive");
 		super.onReceive(context, intent);
-		
+
 		// 日期改变时调用
 		if (intent.getAction().equals(Intent.ACTION_DATE_CHANGED))
 		{
@@ -113,27 +114,62 @@ public class TaskWidget extends AppWidgetProvider
 			System.out.println(" " + widgetIds[0]);
 			if (widgetIds != null && widgetIds.length > 0)
 			{
-				//调用更新函数
+				// 调用更新函数
 				onUpdate(context, AppWidgetManager.getInstance(context),
 						widgetIds);
 			}
 		}
-	}
-	
-	
-		/**
-		* 描述：更新widget，发送一个intent让widget接收，并调用onUpdate函数，是一个静态方法
-		* @param context void
-		*/ 
-		public static void updateWidget(Context context)
+
+		// update
+		if (intent.getAction().equals("com.czq.action.APPWIDGET_UPDATE"))
 		{
-			Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-			Bundle extras = new Bundle();
-			//放入widget的id
-			extras.putIntArray(AppWidgetManager.EXTRA_APPWIDGET_IDS,
-					TaskWidget.widgetIds);
-			intent.putExtras(extras);
-			context.sendBroadcast(intent);
+			System.out.println(" " + widgetIds[0]);
+			if (widgetIds != null && widgetIds.length > 0)
+			{
+				System.out.println("update");
+				// 调用更新函数
+				onUpdate(context, AppWidgetManager.getInstance(context),
+						widgetIds);
+				ComponentName componentName = new ComponentName(context,
+						TaskWidget.class);
+				// 调用更新函数
+				onUpdate(
+						context,
+						AppWidgetManager.getInstance(context),
+						AppWidgetManager.getInstance(context).getAppWidgetIds(
+								componentName));
+
+			}
 		}
+	}
+
+	/**
+	 * 描述：更新widget，发送一个intent让widget接收，并调用onUpdate函数，是一个静态方法
+	 * 
+	 * @param context
+	 *            void
+	 */
+	public static void updateWidget(Context context)
+	{
+		ComponentName componentName = new ComponentName(context,
+				TaskWidget.class);
+		int id[] = AppWidgetManager.getInstance(context).getAppWidgetIds(
+				componentName);
+		if (id == null || id.length == 0)
+			return;
+
+		Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+		Bundle extras = new Bundle();
+		// 放入widget的id
+
+		extras.putIntArray(AppWidgetManager.EXTRA_APPWIDGET_IDS, id);
+		intent.putExtras(extras);
+		context.sendBroadcast(intent);
+
+		System.out.println("widgetIds[0]:" + widgetIds[0]);
+		System.out.println(AppWidgetManager.getInstance(context)
+				.getAppWidgetIds(componentName)[0]);
+
+	}
 
 }
