@@ -154,7 +154,7 @@ public class DBManager
 	public List<Task> queryAll()
 	{
 
-		Cursor c = db.rawQuery("SELECT * FROM task ORDER BY date", null);
+		Cursor c = db.rawQuery("SELECT * FROM task ORDER BY date DESC", null);
 		return queryByCursor(c);
 	}
 
@@ -166,7 +166,7 @@ public class DBManager
 		String dateStr = StrTool.getDateStr(year, month, dayOfMonth);
 
 		Cursor c = db.rawQuery(
-				"SELECT * FROM task WHERE date<=? AND enddate>=?", new String[]
+				"SELECT * FROM task WHERE date<=? AND enddate>=? ORDER BY date DESC", new String[]
 				{ dateStr, dateStr });
 		System.out.println(dateStr + "×Ü¹²ÓÐ" + c.getCount());
 		return queryByCursor(c);

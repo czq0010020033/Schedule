@@ -36,8 +36,8 @@ public class MainFragment extends Fragment implements OnDateChangeListener
 		View view = inflater.inflate(R.layout.frag_main, container, false);
 		calendarView = (CalendarView) view.findViewById(R.id.calendarView);
 		calendarView.setOnDateChangeListener(this);
-		System.out.println("calendarView childcount: "
-				+ calendarView.getChildCount());
+/*		System.out.println("calendarView childcount: "
+				+ calendarView.getChildCount());*/
 
 		date = calendarView.getDate();
 		return view;

@@ -46,7 +46,7 @@ public final class R {
         public static final int export_exportbtn=0x7f0a0004;
         public static final int export_importbtn=0x7f0a0005;
         public static final int export_text=0x7f0a0003;
-        public static final int frag_bottom=0x7f0a000a;
+        public static final int frag_bottom=0x7f0a0009;
         public static final int frag_bottom_all=0x7f0a0021;
         public static final int frag_bottom_exit=0x7f0a0022;
         public static final int frag_bottom_main=0x7f0a0020;
@@ -56,7 +56,7 @@ public final class R {
         public static final int item_title=0x7f0a0026;
         public static final int listView=0x7f0a0015;
         public static final int list_file=0x7f0a0028;
-        public static final int main_content=0x7f0a0009;
+        public static final int main_content=0x7f0a000a;
         public static final int menu_top_about=0x7f0a002e;
         public static final int menu_top_import=0x7f0a002d;
         public static final int show_content=0x7f0a001d;

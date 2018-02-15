@@ -116,15 +116,6 @@ public class TaskShowActivity extends Activity implements OnClickListener
 
 	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event)
-	{
-		super.onKeyDown(keyCode, event);
-		if (keyCode == KeyEvent.KEYCODE_BACK)
-		{
-			TaskShowActivity.this.finish();
-		}
-		return true;
-	}
+
 
 }

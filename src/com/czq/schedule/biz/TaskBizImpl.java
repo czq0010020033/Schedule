@@ -13,25 +13,29 @@ import com.czq.schedule.database.DBManager;
 
 /**
  * 
-* 描述: TaskBiz的实现类<br><br>
-* 作者： 陈镇钦/850530595@qq.com<br>    
-* 创建时间：2016年5月7日/下午6:39:12<br>    
-* 修改人：陈镇钦/850530595@qq.com<br>    
-* 修改时间：2016年5月7日/下午6:39:12<br>    
-* 修改备注：<br>
-* 版本：1.0
-*/   
+ * 描述: TaskBiz的实现类<br>
+ * <br>
+ * 作者： 陈镇钦/850530595@qq.com<br>
+ * 创建时间：2016年5月7日/下午6:39:12<br>
+ * 修改人：陈镇钦/850530595@qq.com<br>
+ * 修改时间：2016年5月7日/下午6:39:12<br>
+ * 修改备注：<br>
+ * 版本：1.0
+ */
 public class TaskBizImpl implements TaskBiz
 {
-	
-	/** 
-	 *  数据库操作类
-	 */ 
+
+	/**
+	 * 数据库操作类
+	 */
 	private DBManager dbManager;
-	/** 
-	 *   上下文，可以是Activity，Fragment等。
-	 */ 
+	/**
+	 * 上下文，可以是Activity，Fragment等。
+	 */
 	private Context context;
+
+	//
+	private List<HashMap<String, String>> tasksStrlistView;
 
 	public TaskBizImpl(Context context)
 	{
@@ -40,73 +44,81 @@ public class TaskBizImpl implements TaskBiz
 	}
 
 	/**
-	* 描述： 
-	* @see com.czq.schedule.biz.TaskBiz#add(com.czq.schedule.bean.Task)
-	*/ 
+	 * 描述：
+	 * 
+	 * @see com.czq.schedule.biz.TaskBiz#add(com.czq.schedule.bean.Task)
+	 */
 	@Override
 	public int add(Task task)
 	{
 		int id = -1;
-		if ("".equals(task.getTitle()) || "".equals(task.getDate()) || "".equals(task.getEnddate()))
+		if ("".equals(task.getTitle()) || "".equals(task.getDate())
+				|| "".equals(task.getEnddate()))
 		{
 			return id;
 		}
 		id = dbManager.add(task);
-		//更新widget状态
-		TaskWidget.	updateWidget(context);
+		// 更新widget状态
+		TaskWidget.updateWidget(context);
 		return id;
 	}
 
 	/**
-	* 描述： 
-	* @see com.czq.schedule.biz.TaskBiz#addWithNoUpdate(com.czq.schedule.bean.Task)
-	*/ 
+	 * 描述：
+	 * 
+	 * @see com.czq.schedule.biz.TaskBiz#addWithNoUpdate(com.czq.schedule.bean.Task)
+	 */
 	@Override
 	public int addWithNoUpdate(Task task)
 	{
 		int id = -1;
-		if ("".equals(task.getTitle()) || "".equals(task.getDate()) || "".equals(task.getEnddate()))
+		if ("".equals(task.getTitle()) || "".equals(task.getDate())
+				|| "".equals(task.getEnddate()))
 		{
 			return id;
 		}
 		id = dbManager.add(task);
 		return id;
 	}
-	
+
 	/**
-	* 描述： 
-	* @see com.czq.schedule.biz.TaskBiz#update(com.czq.schedule.bean.Task)
-	*/ 
+	 * 描述：
+	 * 
+	 * @see com.czq.schedule.biz.TaskBiz#update(com.czq.schedule.bean.Task)
+	 */
 	@Override
 	public boolean update(Task task)
 	{
-		if ("".equals(task.getTitle()) || "".equals(task.getDate()) || "".equals(task.getEnddate()))
+		if ("".equals(task.getTitle()) || "".equals(task.getDate())
+				|| "".equals(task.getEnddate()))
 		{
 			return false;
 		}
 		dbManager.update(task);
-		//更新widget状态
+		// 更新widget状态
 		TaskWidget.updateWidget(context);
-		
+
 		return true;
 	}
 
 	/**
-	* 描述： 
-	* @see com.czq.schedule.biz.TaskBiz#delete(int)
-	*/ 
+	 * 描述：
+	 * 
+	 * @see com.czq.schedule.biz.TaskBiz#delete(int)
+	 */
 	@Override
 	public void delete(int id)
 	{
 		dbManager.delete(id);
-		//更新widget状态
+		// 更新widget状态
 		TaskWidget.updateWidget(context);
 	}
 
 	/**
-	* 描述： 
-	* @see com.czq.schedule.biz.TaskBiz#queryAll()
-	*/ 
+	 * 描述：
+	 * 
+	 * @see com.czq.schedule.biz.TaskBiz#queryAll()
+	 */
 	@Override
 	public List<Task> queryAll()
 	{
@@ -114,9 +126,10 @@ public class TaskBizImpl implements TaskBiz
 	}
 
 	/**
-	* 描述： 
-	* @see com.czq.schedule.biz.TaskBiz#getTitles(java.util.List)
-	*/ 
+	 * 描述：
+	 * 
+	 * @see com.czq.schedule.biz.TaskBiz#getTitles(java.util.List)
+	 */
 	@Override
 	public List<String> getTitles(List<Task> tasks)
 	{
@@ -130,27 +143,32 @@ public class TaskBizImpl implements TaskBiz
 	}
 
 	/**
-	* 描述： 
-	* @see com.czq.schedule.biz.TaskBiz#getTitleAndDate(java.util.List)
-	*/ 
+	 * 描述：
+	 * 
+	 * @see com.czq.schedule.biz.TaskBiz#getTitleAndDate(java.util.List)
+	 */
 	@Override
 	public List<HashMap<String, String>> getTitleAndDate(List<Task> tasks)
 	{
-		List<HashMap<String, String>> tasksStr = new ArrayList<HashMap<String, String>>();
+		if (tasksStrlistView == null)
+			tasksStrlistView = new ArrayList<HashMap<String, String>>();
+		else
+			tasksStrlistView.clear();
 		for (Task task : tasks)
 		{
 			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("title", task.getTitle());
-			map.put("date", task.getDate() + "\n" +task.getEnddate());
-			tasksStr.add(map);
+			map.put("date", task.getDate() + "\n" + task.getEnddate());
+			tasksStrlistView.add(map);
 		}
-		return tasksStr;
+		return tasksStrlistView;
 	}
 
 	/**
-	* 描述： 
-	* @see com.czq.schedule.biz.TaskBiz#queryByDate(int, int, int)
-	*/ 
+	 * 描述：
+	 * 
+	 * @see com.czq.schedule.biz.TaskBiz#queryByDate(int, int, int)
+	 */
 	@Override
 	public List<Task> queryByDate(int year, int month, int dayOfMonth)
 	{
@@ -158,9 +176,10 @@ public class TaskBizImpl implements TaskBiz
 	}
 
 	/**
-	* 描述： 
-	* @see com.czq.schedule.biz.TaskBiz#query(int)
-	*/ 
+	 * 描述：
+	 * 
+	 * @see com.czq.schedule.biz.TaskBiz#query(int)
+	 */
 	@Override
 	public Task query(int id)
 	{
@@ -169,8 +188,8 @@ public class TaskBizImpl implements TaskBiz
 	}
 
 	/**
-	* 描述：获得当天的待办事项。返回是一个字符串。用于widget显示
-	*/ 
+	 * 描述：获得当天的待办事项。返回是一个字符串。用于widget显示
+	 */
 	public static String getTodayTitles(Context context)
 	{
 		// 获得该日期的待办事项。
@@ -185,19 +204,16 @@ public class TaskBizImpl implements TaskBiz
 		{
 			stringBuilder.append(s + "\n");
 		}
-		
+
 		taskBiz.close();
 		return stringBuilder.toString();
 	}
 
-	
-	
-	
-
 	/**
-	* 描述： 
-	* @see com.czq.schedule.biz.TaskBiz#close()
-	*/ 
+	 * 描述：
+	 * 
+	 * @see com.czq.schedule.biz.TaskBiz#close()
+	 */
 	@Override
 	public void close()
 	{
@@ -206,15 +222,14 @@ public class TaskBizImpl implements TaskBiz
 	}
 
 	/**
-	* 描述： 
-	* @see com.czq.schedule.biz.TaskBiz#deleteAll()
-	*/ 
+	 * 描述：
+	 * 
+	 * @see com.czq.schedule.biz.TaskBiz#deleteAll()
+	 */
 	@Override
 	public void deleteAll()
 	{
 		dbManager.deleteAll();
 	}
-
-	
 
 }

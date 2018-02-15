@@ -25,9 +25,18 @@ import com.czq.schedule.tool.StrTool;
  * 修改备注：<br>
  * 版本：1.0
  */
-public class TaskWidget extends AppWidgetProvider
-{
-	public static int widgetIds[];
+public class TaskWidget extends AppWidgetProvider {
+	/**
+	 * @return widgetIds
+	 */
+	public static int[] getWidgetIds(Context context) {
+		ComponentName componentName = new ComponentName(context,
+				TaskWidget.class);
+
+		int widgetIds[] = AppWidgetManager.getInstance(context)
+				.getAppWidgetIds(componentName);
+		return widgetIds;
+	}
 
 	/**
 	 * 用来间隔的更新App
@@ -38,11 +47,9 @@ public class TaskWidget extends AppWidgetProvider
 	 */
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
-			int[] appWidgetIds)
-	{
+			int[] appWidgetIds) {
 		System.out.println("onUpdate");
-		// 赋值
-		widgetIds = appWidgetIds;
+
 		// RemoteViews类描述了一个View对象能够显示在其他进程中，可以融合layout资源文件实现布局。widgei对象
 		RemoteViews myRemoteViews = new RemoteViews(context.getPackageName(),
 				R.layout.widget_task);
@@ -57,8 +64,7 @@ public class TaskWidget extends AppWidgetProvider
 				PendingIntent.getActivity(context, 0, intent, 0));
 
 		// 遍历更新，TaskWidget的实例可能不只一个
-		for (int id : appWidgetIds)
-		{
+		for (int id : appWidgetIds) {
 			// appWidgetManager负责管理AppWidget，向AppwidgetProvider发送通知。提供了更新AppWidget状态
 			appWidgetManager.updateAppWidget(id, myRemoteViews);
 		}
@@ -69,8 +75,7 @@ public class TaskWidget extends AppWidgetProvider
 	 * 当App Widget从宿主中删除时被调用。
 	 */
 	@Override
-	public void onDeleted(Context context, int[] appWidgetIds)
-	{
+	public void onDeleted(Context context, int[] appWidgetIds) {
 		System.out.println("onDeleted");
 		super.onDeleted(context, appWidgetIds);
 	}
@@ -80,8 +85,7 @@ public class TaskWidget extends AppWidgetProvider
 	 * 如果你需要打开一个新的数据库或者执行其他对于所有的App Widget实例只需要发生一次的设置， 那么这里是完成这个工作的好地方。
 	 */
 	@Override
-	public void onEnabled(Context context)
-	{
+	public void onEnabled(Context context) {
 		System.out.println("onEnabled");
 		super.onEnabled(context);
 	}
@@ -91,8 +95,7 @@ public class TaskWidget extends AppWidgetProvider
 	 * Widget的最后一个实例被从宿主中删除时被调用。你应该在onEnabled(Context)中做一些清理工作，比如删除一个临时的数据库
 	 */
 	@Override
-	public void onDisabled(Context context)
-	{
+	public void onDisabled(Context context) {
 		System.out.println("onDisabled");
 		super.onDisabled(context);
 	}
@@ -102,45 +105,28 @@ public class TaskWidget extends AppWidgetProvider
 	 * Widget广播并恰当的调用上述方法。
 	 */
 	@Override
-	public void onReceive(Context context, Intent intent)
-	{
+	public void onReceive(Context context, Intent intent) {
 		System.out.println("onReceive");
 		super.onReceive(context, intent);
 
-		// 日期改变时调用
-		if (intent.getAction().equals(Intent.ACTION_DATE_CHANGED))
-		{
-			System.out.println("ACTION_DATE_CHANGED");
-			System.out.println(" " + widgetIds[0]);
-			if (widgetIds != null && widgetIds.length > 0)
-			{
+		
+
+		// 日期改变时调用 或 事件变动
+		if (intent.getAction().equals(Intent.ACTION_DATE_CHANGED)
+				|| intent.getAction().equals("com.czq.action.APPWIDGET_UPDATE")) {
+		//	System.out.println("ACTION_DATE_CHANGED");
+			// System.out.println(" " + widgetIds[0]);
+			// ids
+			int[] widgetIds = getWidgetIds(context);
+			System.out.println("部件更新");
+			if (widgetIds != null && widgetIds.length > 0) {
 				// 调用更新函数
 				onUpdate(context, AppWidgetManager.getInstance(context),
 						widgetIds);
+				System.out.println("部件更新。。");
 			}
 		}
-
-		// update
-		if (intent.getAction().equals("com.czq.action.APPWIDGET_UPDATE"))
-		{
-			System.out.println(" " + widgetIds[0]);
-			if (widgetIds != null && widgetIds.length > 0)
-			{
-				System.out.println("update");
-				// 调用更新函数
-				onUpdate(context, AppWidgetManager.getInstance(context),
-						widgetIds);
-				ComponentName componentName = new ComponentName(context,
-						TaskWidget.class);
-				// 调用更新函数
-				onUpdate(
-						context,
-						AppWidgetManager.getInstance(context),
-						AppWidgetManager.getInstance(context).getAppWidgetIds(
-								componentName));
-
-			}
-		}
+		System.out.println("onReceive over");
 	}
 
 	/**
@@ -149,27 +135,20 @@ public class TaskWidget extends AppWidgetProvider
 	 * @param context
 	 *            void
 	 */
-	public static void updateWidget(Context context)
-	{
-		ComponentName componentName = new ComponentName(context,
-				TaskWidget.class);
-		int id[] = AppWidgetManager.getInstance(context).getAppWidgetIds(
-				componentName);
-		if (id == null || id.length == 0)
+	public static void updateWidget(Context context) {
+		// ids
+		int[] widgetIds = getWidgetIds(context);
+		if (widgetIds == null || widgetIds.length == 0)
 			return;
-
+	//	Intent intent = new Intent(Intent.ACTION_DATE_CHANGED);
+		
 		Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 		Bundle extras = new Bundle();
 		// 放入widget的id
 
-		extras.putIntArray(AppWidgetManager.EXTRA_APPWIDGET_IDS, id);
+		extras.putIntArray(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds);
 		intent.putExtras(extras);
 		context.sendBroadcast(intent);
-
-		System.out.println("widgetIds[0]:" + widgetIds[0]);
-		System.out.println(AppWidgetManager.getInstance(context)
-				.getAppWidgetIds(componentName)[0]);
-
 	}
 
 }

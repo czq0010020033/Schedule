@@ -34,6 +34,7 @@ public class TaskListFragment extends Fragment implements OnItemClickListener
 {
 
 	private ListView listView;
+	private SimpleAdapter simpleAdapter;
 
 	// 标志要查询什么内容。在Intent中传输
 	/*
@@ -92,17 +93,34 @@ public class TaskListFragment extends Fragment implements OnItemClickListener
 		// 判断tasksstr是否为空
 		if (tasksStr.isEmpty())
 		{
-			System.out.println("it is null");
 			return;
 		}
 
-		SimpleAdapter simpleAdapter = new SimpleAdapter(getActivity(),
-				tasksStr, R.layout.list_item, new String[]
+		simpleAdapter = new SimpleAdapter(getActivity(), tasksStr,
+				R.layout.list_item, new String[]
 				{ "title", "date" }, new int[]
 				{ R.id.item_title, R.id.item_date });
 		listView.setAdapter(simpleAdapter);
 		listView.setOnItemClickListener(this);
 
+	}
+
+	/**
+	 * 描述：返回时用来更新listview
+	 * 
+	 * @see android.app.Fragment#onResume()
+	 */
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		if (taskBiz != null && simpleAdapter != null)
+		{
+			tasks = taskBiz.queryAll();
+			// 查询
+			tasksStr = taskBiz.getTitleAndDate(tasks);
+			simpleAdapter.notifyDataSetChanged();
+		}
 	}
 
 	/**

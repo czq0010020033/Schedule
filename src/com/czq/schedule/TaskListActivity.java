@@ -124,20 +124,7 @@ public class TaskListActivity extends Activity implements OnItemClickListener
 					startActivity(intent);
 	}
 
-	/**
-	* 描述：按返回键则结束该Activity，该方式还不确定是否好用
-	*/ 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event)
-	{
-		super.onKeyDown(keyCode, event);
-		if (keyCode == KeyEvent.KEYCODE_BACK)
-		{
-			TaskListActivity.this.finish();
-		}
 
-		return true;
-	}
 
 	@Override
 	protected void onDestroy()
